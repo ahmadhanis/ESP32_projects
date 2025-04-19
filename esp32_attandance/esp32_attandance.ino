@@ -123,19 +123,20 @@ void setup() {
   Serial.begin(115200);
   SPI.begin();
   mfrc522.PCD_Init();  // Initialize RFID reader
-
+  Serial.println("CARD INIT...");
   // Initialize OLED display
   Wire.begin(I2C_SDA, I2C_SCL);
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
     Serial.println("OLED init failed");
     while (true); // Stop if OLED fails
   }
+  Serial.println("OLED INIT...");
 
   // Get device MAC address and remove colons
   macID = WiFi.macAddress();
   macIDFormatted = macID;
   macIDFormatted.replace(":", "");
-
+  Serial.println(macIDFormatted);
   // Attempt to connect to WiFi
   displayCenteredText("Connecting", "to WiFi...");
   WiFi.mode(WIFI_STA);
@@ -148,7 +149,7 @@ void setup() {
     delay(500);
     Serial.print(".");
   }
-
+  Serial.println("WIFI INIT...");
   // If WiFi fails, start WiFiManager config portal
   if (WiFi.status() != WL_CONNECTED) {
     displayCenteredText("WiFi Setup Mode");
@@ -205,6 +206,7 @@ void loop() {
   cardid.toUpperCase();
 
   displayCenteredText("Card Detected", cardid);
+  Serial.println(cardid);
   sendToServer(cardid);  // send data to PHP server
   mfrc522.PICC_HaltA();  // halt communication
 }
